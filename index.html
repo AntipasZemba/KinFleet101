@@ -82,8 +82,22 @@
 
     <!-- CHART -->
     <div class="card mb-8">
-      <h2 class="text-xl font-semibold mb-4">📈 Profit Over Time</h2>
+      <h2 class="text-xl font-semibold mb-4">Profit Over Time</h2>
       <canvas id="profitChart" class="w-full" style="height:200px; max-height:250px;"></canvas>
     </div>
+
+    <!-- DRIVER LEADERBOARD -->
+    <section class="card mb-8">
+      <h2 class="text-xl font-semibold mb-4">Driver Leaderboard</h2>
+      <table class="w-full border text-left">
+        <thead>
+          <tr>
+            <th class="p-2">Driver</th>
+            <th class="p-2">Total Earnings ($)</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard"></tbody>
+      </table>
+    </section>
 </body>
 </html>
