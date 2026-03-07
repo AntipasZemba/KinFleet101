@@ -101,5 +101,52 @@
     </section>
 
     <!-- DATA TABLES -->
+    <section class="grid md:grid-cols-2 gap-6">
+      <!-- Daily Logs -->
+      <div class="card">
+        <h2 class="text-xl font-semibold mb-4">🗓 Daily Logs</h2>
+        <form id="entryForm" class="space-y-2 mb-4">
+          <input type="date" id="date" class="w-full p-2 rounded-md" required>
+          <input type="text" id="driver" placeholder="Driver Name" class="w-full p-2 rounded-md" required>
+          <input type="text" id="motorId" placeholder="Car ID" class="w-full p-2 rounded-md" required>
+          <input type="number" id="earnings" placeholder="Earnings ($)" class="w-full p-2 rounded-md" required>
+          <button type="submit" class="bg-black text-white w-full py-2 rounded-md hover:bg-gray-800 transition">Add Entry</button>
+        </form>
+        <table class="w-full border text-left text-sm">
+          <thead>
+            <tr>
+              <th class="p-2">Date</th>
+              <th class="p-2">Driver</th>
+              <th class="p-2">Earnings</th>
+              <th class="p-2">🗑️</th>
+            </tr>
+          </thead>
+          <tbody id="dataTable"></tbody>
+        </table>
+      </div>
+
+      <!-- Maintenance -->
+      <div class="card">
+        <h2 class="text-xl font-semibold mb-4">⚙️ Maintenance Logs</h2>
+        <form id="maintenanceForm" class="space-y-2 mb-4">
+          <input type="date" id="mDate" class="w-full p-2 rounded-md" required>
+          <input type="text" id="mMotorId" placeholder="Car ID" class="w-full p-2 rounded-md" required>
+          <input type="text" id="mDescription" placeholder="Description" class="w-full p-2 rounded-md" required>
+          <input type="number" id="mCost" placeholder="Cost ($)" class="w-full p-2 rounded-md" required>
+          <button type="submit" class="bg-black text-white w-full py-2 rounded-md hover:bg-gray-800 transition">Add Maintenance</button>
+        </form>
+        <table class="w-full border text-left text-sm">
+          <thead>
+            <tr>
+              <th class="p-2">Date</th>
+              <th class="p-2">Motor ID</th>
+              <th class="p-2">Cost</th>
+              <th class="p-2">🗑️</th>
+            </tr>
+          </thead>
+          <tbody id="maintenanceTable"></tbody>
+        </table>
+      </div>
+    </section>
 </body>
 </html>
