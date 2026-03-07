@@ -34,119 +34,120 @@
                 (<span id="currentRole" class="font-semibold"></span>)
             </p>
         </header>
+
+        <!-- FILTER + SUMMARY -->
+        <section class="flex flex-wrap gap-4 mb-8 items-end">
+            <div>
+                <label class="block text-sm">Filter by Month</label>
+                <input type="month" id="monthFilter" class="p-2 rounded-md border">
+            </div>
+            <div class="ml-auto flex gap-4">
+                <button onclick="exportExcel()" class="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition">Export Excel</button>
+                <button onclick="logout()" class="border px-4 py-2 rounded-md hover:bg-gray-100 transition">Logout</button>
+                <button onclick="toggleAdminPanel()" class="border px-4 py-2 rounded-md hover:bg-gray-100 transition">Manage Admins</button>
+            </div>
+        </section>
+
+        <!--Admin Management-->
+        <section id="adminPanel" class="card mb-8 hidden">
+            <h2 class="text-xl font-semibold mb-4">Admin Management</h2>
+
+            <form id="addAdminForm" class="space-y-2 mb-4">
+                <input type="text" id="newAdminUser" placeholder="New Username" class="w-full p-2 rounded-md" required>
+                <input type="password" id="newAdminPass" placeholder="New Password" class="w-full p-2 rounded-md" required>
+                <button type="submit" class="bg-black text-white w-full py-2 rounded-md hover:bg-gray-800 transition">
+                Add Admin
+                </button>
+            </form>
+
+            <ul id="adminList" class="text-sm space-y-1"></ul>
+        </section>
+
+        <!-- SUMMARY -->
+        <section class="grid md:grid-cols-3 gap-4 mb-8">
+            <div class="card text-center">
+                <p class="text-sm text-gray-500">Total Earnings</p>
+                <h2 id="totalEarnings" class="text-2xl font-semibold">$0</h2>
+            </div>
+            <div class="card text-center">
+                <p class="text-sm text-gray-500">Maintenance Cost</p>
+                <h2 id="totalMaintenance" class="text-2xl font-semibold">$0</h2>
+            </div>
+            <div class="card text-center">
+                <p class="text-sm text-gray-500">Net Profit</p>
+                <h2 id="netProfit" class="text-2xl font-semibold">$0</h2>
+            </div>
+        </section>
+
+        <!-- CHART -->
+        <div class="card mb-8">
+            <h2 class="text-xl font-semibold mb-4">Profit Over Time</h2>
+            <canvas id="profitChart" class="w-full" style="height:200px; max-height:250px;"></canvas>
+        </div>
+
+        <!-- DRIVER LEADERBOARD -->
+        <section class="card mb-8">
+            <h2 class="text-xl font-semibold mb-4">Driver Leaderboard</h2>
+            <table class="w-full border text-left">
+                <thead>
+                <tr>
+                    <th class="p-2">Driver</th>
+                    <th class="p-2">Total Earnings ($)</th>
+                </tr>
+                </thead>
+                <tbody id="leaderboard"></tbody>
+            </table>
+        </section>
+
+        <!-- DATA TABLES -->
+        <section class="grid md:grid-cols-2 gap-6">
+            <!-- Daily Logs -->
+            <div class="card">
+                <h2 class="text-xl font-semibold mb-4">🗓 Daily Logs</h2>
+                <form id="entryForm" class="space-y-2 mb-4">
+                <input type="date" id="date" class="w-full p-2 rounded-md" required>
+                <input type="text" id="driver" placeholder="Driver Name" class="w-full p-2 rounded-md" required>
+                <input type="text" id="motorId" placeholder="Car ID" class="w-full p-2 rounded-md" required>
+                <input type="number" id="earnings" placeholder="Earnings ($)" class="w-full p-2 rounded-md" required>
+                <button type="submit" class="bg-black text-white w-full py-2 rounded-md hover:bg-gray-800 transition">Add Entry</button>
+                </form>
+                <table class="w-full border text-left text-sm">
+                <thead>
+                    <tr>
+                    <th class="p-2">Date</th>
+                    <th class="p-2">Driver</th>
+                    <th class="p-2">Earnings</th>
+                    <th class="p-2">🗑️</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable"></tbody>
+                </table>
+            </div>
+
+            <!-- Maintenance -->
+            <div class="card">
+                <h2 class="text-xl font-semibold mb-4">⚙️ Maintenance Logs</h2>
+                <form id="maintenanceForm" class="space-y-2 mb-4">
+                <input type="date" id="mDate" class="w-full p-2 rounded-md" required>
+                <input type="text" id="mMotorId" placeholder="Car ID" class="w-full p-2 rounded-md" required>
+                <input type="text" id="mDescription" placeholder="Description" class="w-full p-2 rounded-md" required>
+                <input type="number" id="mCost" placeholder="Cost ($)" class="w-full p-2 rounded-md" required>
+                <button type="submit" class="bg-black text-white w-full py-2 rounded-md hover:bg-gray-800 transition">Add Maintenance</button>
+                </form>
+                <table class="w-full border text-left text-sm">
+                <thead>
+                    <tr>
+                    <th class="p-2">Date</th>
+                    <th class="p-2">Motor ID</th>
+                    <th class="p-2">Cost</th>
+                    <th class="p-2">🗑️</th>
+                    </tr>
+                </thead>
+                <tbody id="maintenanceTable"></tbody>
+                </table>
+            </div>
+        </section>
     </main>
-
-    <!-- FILTER + SUMMARY -->
-    <section class="flex flex-wrap gap-4 mb-8 items-end">
-      <div>
-        <label class="block text-sm">Filter by Month</label>
-        <input type="month" id="monthFilter" class="p-2 rounded-md border">
-      </div>
-      <div class="ml-auto flex gap-4">
-        <button onclick="exportExcel()" class="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition">Export Excel</button>
-        <button onclick="logout()" class="border px-4 py-2 rounded-md hover:bg-gray-100 transition">Logout</button>
-        <button onclick="toggleAdminPanel()" class="border px-4 py-2 rounded-md hover:bg-gray-100 transition">Manage Admins</button>
-      </div>
-    </section>
-
-    <!--Admin Management-->
-    <section id="adminPanel" class="card mb-8 hidden">
-        <h2 class="text-xl font-semibold mb-4">Admin Management</h2>
-
-        <form id="addAdminForm" class="space-y-2 mb-4">
-            <input type="text" id="newAdminUser" placeholder="New Username" class="w-full p-2 rounded-md" required>
-            <input type="password" id="newAdminPass" placeholder="New Password" class="w-full p-2 rounded-md" required>
-            <button type="submit" class="bg-black text-white w-full py-2 rounded-md hover:bg-gray-800 transition">
-            Add Admin
-            </button>
-        </form>
-
-        <ul id="adminList" class="text-sm space-y-1"></ul>
-    </section>
-
-    <!-- SUMMARY -->
-    <section class="grid md:grid-cols-3 gap-4 mb-8">
-      <div class="card text-center">
-        <p class="text-sm text-gray-500">Total Earnings</p>
-        <h2 id="totalEarnings" class="text-2xl font-semibold">$0</h2>
-      </div>
-      <div class="card text-center">
-        <p class="text-sm text-gray-500">Maintenance Cost</p>
-        <h2 id="totalMaintenance" class="text-2xl font-semibold">$0</h2>
-      </div>
-      <div class="card text-center">
-        <p class="text-sm text-gray-500">Net Profit</p>
-        <h2 id="netProfit" class="text-2xl font-semibold">$0</h2>
-      </div>
-    </section>
-
-    <!-- CHART -->
-    <div class="card mb-8">
-      <h2 class="text-xl font-semibold mb-4">Profit Over Time</h2>
-      <canvas id="profitChart" class="w-full" style="height:200px; max-height:250px;"></canvas>
-    </div>
-
-    <!-- DRIVER LEADERBOARD -->
-    <section class="card mb-8">
-      <h2 class="text-xl font-semibold mb-4">Driver Leaderboard</h2>
-      <table class="w-full border text-left">
-        <thead>
-          <tr>
-            <th class="p-2">Driver</th>
-            <th class="p-2">Total Earnings ($)</th>
-          </tr>
-        </thead>
-        <tbody id="leaderboard"></tbody>
-      </table>
-    </section>
-
-    <!-- DATA TABLES -->
-    <section class="grid md:grid-cols-2 gap-6">
-      <!-- Daily Logs -->
-      <div class="card">
-        <h2 class="text-xl font-semibold mb-4">🗓 Daily Logs</h2>
-        <form id="entryForm" class="space-y-2 mb-4">
-          <input type="date" id="date" class="w-full p-2 rounded-md" required>
-          <input type="text" id="driver" placeholder="Driver Name" class="w-full p-2 rounded-md" required>
-          <input type="text" id="motorId" placeholder="Car ID" class="w-full p-2 rounded-md" required>
-          <input type="number" id="earnings" placeholder="Earnings ($)" class="w-full p-2 rounded-md" required>
-          <button type="submit" class="bg-black text-white w-full py-2 rounded-md hover:bg-gray-800 transition">Add Entry</button>
-        </form>
-        <table class="w-full border text-left text-sm">
-          <thead>
-            <tr>
-              <th class="p-2">Date</th>
-              <th class="p-2">Driver</th>
-              <th class="p-2">Earnings</th>
-              <th class="p-2">🗑️</th>
-            </tr>
-          </thead>
-          <tbody id="dataTable"></tbody>
-        </table>
-      </div>
-
-      <!-- Maintenance -->
-      <div class="card">
-        <h2 class="text-xl font-semibold mb-4">⚙️ Maintenance Logs</h2>
-        <form id="maintenanceForm" class="space-y-2 mb-4">
-          <input type="date" id="mDate" class="w-full p-2 rounded-md" required>
-          <input type="text" id="mMotorId" placeholder="Car ID" class="w-full p-2 rounded-md" required>
-          <input type="text" id="mDescription" placeholder="Description" class="w-full p-2 rounded-md" required>
-          <input type="number" id="mCost" placeholder="Cost ($)" class="w-full p-2 rounded-md" required>
-          <button type="submit" class="bg-black text-white w-full py-2 rounded-md hover:bg-gray-800 transition">Add Maintenance</button>
-        </form>
-        <table class="w-full border text-left text-sm">
-          <thead>
-            <tr>
-              <th class="p-2">Date</th>
-              <th class="p-2">Motor ID</th>
-              <th class="p-2">Cost</th>
-              <th class="p-2">🗑️</th>
-            </tr>
-          </thead>
-          <tbody id="maintenanceTable"></tbody>
-        </table>
-      </div>
-    </section>
+    
 </body>
 </html>
