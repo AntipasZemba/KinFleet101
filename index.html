@@ -48,5 +48,20 @@
         <button onclick="toggleAdminPanel()" class="border px-4 py-2 rounded-md hover:bg-gray-100 transition">Manage Admins</button>
       </div>
     </section>
+
+    <!--Admin Management-->
+    <section id="adminPanel" class="card mb-8 hidden">
+        <h2 class="text-xl font-semibold mb-4">Admin Management</h2>
+
+        <form id="addAdminForm" class="space-y-2 mb-4">
+            <input type="text" id="newAdminUser" placeholder="New Username" class="w-full p-2 rounded-md" required>
+            <input type="password" id="newAdminPass" placeholder="New Password" class="w-full p-2 rounded-md" required>
+            <button type="submit" class="bg-black text-white w-full py-2 rounded-md hover:bg-gray-800 transition">
+            Add Admin
+            </button>
+        </form>
+
+        <ul id="adminList" class="text-sm space-y-1"></ul>
+    </section>
 </body>
 </html>
