@@ -36,6 +36,17 @@
         </header>
     </main>
 
-    
+    <!-- FILTER + SUMMARY -->
+    <section class="flex flex-wrap gap-4 mb-8 items-end">
+      <div>
+        <label class="block text-sm">Filter by Month</label>
+        <input type="month" id="monthFilter" class="p-2 rounded-md border">
+      </div>
+      <div class="ml-auto flex gap-4">
+        <button onclick="exportExcel()" class="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition">Export Excel</button>
+        <button onclick="logout()" class="border px-4 py-2 rounded-md hover:bg-gray-100 transition">Logout</button>
+        <button onclick="toggleAdminPanel()" class="border px-4 py-2 rounded-md hover:bg-gray-100 transition">Manage Admins</button>
+      </div>
+    </section>
 </body>
 </html>
