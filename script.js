@@ -234,7 +234,7 @@ function renderTables(eFilt, mFilt) {
         <td class="p-2">${e.driver}</td>
         <td class="p-2">${e.earnings}</td>
         <td class="p-2 text-center">
-          <span class="delete-btn" onclick="deleteEntry(${entries.indexOf(e)})">✖</span>
+          <span class="delete-btn" onclick="deleteEntry('${e.id}')">✖</span>
         </td>
       </tr>`).join('');
 
@@ -244,23 +244,23 @@ function renderTables(eFilt, mFilt) {
         <td class="p-2">${e.motorId}</td>
         <td class="p-2">${e.cost}</td>
         <td class="p-2 text-center">
-          <span class="delete-btn" onclick="deleteMaintenance(${maintenance.indexOf(e)})">✖</span>
+          <span class="delete-btn" onclick="deleteMaintenance('${e.id}')">✖</span>
         </td>
       </tr>`).join('');
 }
 
-function deleteEntry(i) {
-    if (confirm("Delete this daily log?")) {
-      entries.splice(i, 1);
-      saveData();
-    }
+async function deleteEntry(id) {
+    if (!confirm("Delete this daily log?")) return;
+
+    await deleteDoc(doc(db, "entries", id));
+    loadEntries();
 }
 
-function deleteMaintenance(i) {
-    if (confirm("Delete this maintenance record?")) {
-      maintenance.splice(i, 1);
-      saveData();
-    }
+async function deleteMaintenance(id) {
+    if (!confirm("Delete this maintenance record?")) return;
+
+    await deleteDoc(doc(db, "maintenance", id));
+    loadMaintenance();
 }
 
 function updateSummary(eFilt, mFilt) {
@@ -380,3 +380,10 @@ loadMaintenance();
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js');
 }
+
+window.toggleAdminPanel = toggleAdminPanel;
+window.deleteAdmin = deleteAdmin;
+window.deleteEntry = deleteEntry;
+window.deleteMaintenance = deleteMaintenance;
+window.logout = logout;
+window.exportExcel = exportExcel;
