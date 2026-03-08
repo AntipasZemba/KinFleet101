@@ -1,5 +1,27 @@
 // using existing JS code from previous version.
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyC5MCDcdZZjauThSEDjQaHtTAdKyLZHVd8",
+  authDomain: "kinfleet.firebaseapp.com",
+  projectId: "kinfleet",
+  storageBucket: "kinfleet.firebasestorage.app",
+  messagingSenderId: "66202061688",
+  appId: "1:66202061688:web:4b56841ef48a40b627968d"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 // ---------- AUTH + ROLES ----------
 const loginBtn = document.getElementById('loginBtn');
 const username = document.getElementById('username');
@@ -169,27 +191,27 @@ const leaderboard = document.getElementById('leaderboard');
 const dataTable = document.getElementById('dataTable');
 const maintenanceTable = document.getElementById('maintenanceTable');
 
-entryForm.onsubmit = e => {
+entryForm.onsubmit = async (e) => {
     e.preventDefault();
-    entries.push({
-      date: date.value,
-      driver: driver.value,
-      motorId: motorId.value,
-      earnings: parseFloat(earnings.value)
-    });
-    saveData();
+    await addDoc(collection(db, "entries"), {
+        date: date.value,
+        driver: driver.value,
+        motorId: motorId.value,
+        earnings: parseFloat(earnings.value)
+        });
+    loadEntries();
     e.target.reset();
 };
 
-maintenanceForm.onsubmit = e => {
+maintenanceForm.onsubmit = async (e) => {
     e.preventDefault();
-    maintenance.push({
-      date: mDate.value,
-      motorId: mMotorId.value,
-      description: mDescription.value,
-      cost: parseFloat(mCost.value)
-    });
-    saveData();
+    await addDoc(collection(db, "maintenance"), {
+        date: mDate.value,
+        motorId: mMotorId.value,
+        description: mDescription.value,
+        cost: parseFloat(mCost.value)
+        });
+    loadMaintenance();
     e.target.reset();
 };
 
@@ -335,7 +357,25 @@ function exportExcel() {
     XLSX.writeFile(wb, "KinFleet_Data.xlsx");
 }
 
-renderAll();
+async function loadEntries() {
+  entries = [];
+  const querySnapshot = await getDocs(collection(db, "entries"));
+  querySnapshot.forEach(doc => {
+    entries.push({ id: doc.id, ...doc.data() });
+  });
+  renderAll();
+}
+
+async function loadMaintenance() {
+  maintenance = [];
+  const querySnapshot = await getDocs(collection(db, "maintenance"));
+  querySnapshot.forEach(doc => {
+    maintenance.push({ id: doc.id, ...doc.data() });
+  });
+  renderAll();
+}
+loadEntries();
+loadMaintenance();
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js');

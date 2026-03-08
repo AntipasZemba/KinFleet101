@@ -157,6 +157,25 @@
 
     <footer> Surface © 2026 </footer>
     <script type="module" src="firebase-init.js"></script>
-    <script src="script.js" defer></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5MCDcdZZjauThSEDjQaHtTAdKyLZHVd8",
+            authDomain: "kinfleet.firebaseapp.com",
+            projectId: "kinfleet",
+            storageBucket: "kinfleet.firebasestorage.app",
+            messagingSenderId: "66202061688",
+            appId: "1:66202061688:web:4b56841ef48a40b627968d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.db = db;
+    </script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
