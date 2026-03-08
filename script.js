@@ -4,7 +4,9 @@ import {
   addDoc,
   getDocs,
   deleteDoc,
-  doc
+  doc,
+  getDoc,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -36,23 +38,27 @@ const adminPanel = document.getElementById('adminPanel');
 const addAdminForm = document.getElementById('addAdminForm');
 const adminList = document.getElementById('adminList');
 
-let admins = JSON.parse(localStorage.getItem('kinfleetAdmins')) || [];
+// let admins = JSON.parse(localStorage.getItem('kinfleetAdmins')) || [];
+
+// function hashPassword(pw) {
+//     return btoa(pw);
+// }
+
+// // Create default OWNER if none exist
+// // Ensure Owner always exists
+// const ownerExists = admins.find(a => a.role === "Owner");
+
+// if (!ownerExists) {
+//     admins.push({
+//         username: "owner",
+//         password: hashPassword("owner123"),
+//         role: "Owner"
+//     });
+//     localStorage.setItem('kinfleetAdmins', JSON.stringify(admins));
+// }
 
 function hashPassword(pw) {
-    return btoa(pw);
-}
-
-// Create default OWNER if none exist
-// Ensure Owner always exists
-const ownerExists = admins.find(a => a.role === "Owner");
-
-if (!ownerExists) {
-    admins.push({
-        username: "owner",
-        password: hashPassword("owner123"),
-        role: "Owner"
-    });
-    localStorage.setItem('kinfleetAdmins', JSON.stringify(admins));
+  return btoa(pw);
 }
 
 function showDashboard() {
@@ -77,22 +83,31 @@ function showLogin() {
     dashboard.classList.add('hidden');
 }
 
-loginBtn.onclick = () => {
+loginBtn.onclick = async () => {
+
     const user = username.value.trim();
     const pass = hashPassword(password.value.trim());
 
-    const match = admins.find(a => a.username === user && a.password === pass);
+    const adminRef = doc(db, "admins", user);
+    const adminSnap = await getDoc(adminRef);
 
-    if (match) {
-        localStorage.setItem('kinfleetLoggedIn', 'true');
-        localStorage.setItem('kinfleetCurrentAdmin', match.username);
-        localStorage.setItem('kinfleetCurrentRole', match.role);
-        showDashboard();
-        username.value = "";
-        password.value = "";
-    } else {
+    if (!adminSnap.exists()) {
         loginError.classList.remove('hidden');
+        return;
     }
+
+    const admin = adminSnap.data();
+
+    if (admin.password !== pass) {
+        loginError.classList.remove('hidden');
+        return;
+    }
+
+    localStorage.setItem('kinfleetLoggedIn', 'true');
+    localStorage.setItem('kinfleetCurrentAdmin', admin.username);
+    localStorage.setItem('kinfleetCurrentRole', admin.role);
+
+    showDashboard();
 };
 
 function logout() {
@@ -117,22 +132,36 @@ function toggleAdminPanel() {
     renderAdminList();
 }
 
-function renderAdminList() {
-    admins = JSON.parse(localStorage.getItem('kinfleetAdmins')) || [];
+async function renderAdminList() {
 
-    adminList.innerHTML = admins.map(a => `
-        <li class="flex justify-between border-b py-1">
+    const snapshot = await getDocs(collection(db, "admins"));
+
+    adminList.innerHTML = "";
+
+    snapshot.forEach(docSnap => {
+
+        const a = docSnap.data();
+
+        const li = document.createElement("li");
+        li.className = "flex justify-between border-b py-1";
+
+        li.innerHTML = `
         <span>${a.username} (${a.role})</span>
         ${
             a.role === "Owner"
             ? '<span class="text-gray-400">Protected</span>'
             : `<span class="text-red-600 cursor-pointer" onclick="deleteAdmin('${a.username}')">✖</span>`
         }
-        </li>`
-    ).join('');
+        `;
+
+        adminList.appendChild(li);
+
+    });
+
 }
 
-addAdminForm.onsubmit = e => {
+addAdminForm.onsubmit = async e => {
+
     e.preventDefault();
 
     const role = localStorage.getItem('kinfleetCurrentRole');
@@ -141,33 +170,33 @@ addAdminForm.onsubmit = e => {
     const newUser = newAdminUser.value.trim();
     const newPass = hashPassword(newAdminPass.value.trim());
 
-    if (admins.find(a => a.username === newUser)) {
+    const ref = doc(db, "admins", newUser);
+    const existing = await getDoc(ref);
+
+    if (existing.exists()) {
         alert("Username already exists");
         return;
     }
 
-    admins.push({
+    await setDoc(ref, {
         username: newUser,
         password: newPass,
         role: "Admin"
     });
 
-    localStorage.setItem('kinfleetAdmins', JSON.stringify(admins));
     e.target.reset();
     renderAdminList();
 };
 
-function deleteAdmin(user) {
+async function deleteAdmin(user) {
+
     const role = localStorage.getItem('kinfleetCurrentRole');
     if (role !== "Owner") return;
 
-    const target = admins.find(a => a.username === user);
-    if (!target || target.role === "Owner") return;
-
     if (!confirm("Delete this admin?")) return;
 
-    admins = admins.filter(a => a.username !== user);
-    localStorage.setItem('kinfleetAdmins', JSON.stringify(admins));
+    await deleteDoc(doc(db, "admins", user));
+
     renderAdminList();
 }
 
