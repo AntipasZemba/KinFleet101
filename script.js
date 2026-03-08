@@ -126,10 +126,16 @@ if (localStorage.getItem('kinfleetLoggedIn') === 'true') {
 
 // ---------- ADMIN MANAGEMENT ----------
 function toggleAdminPanel() {
+
     const role = localStorage.getItem('kinfleetCurrentRole');
     if (role !== "Owner") return;
+
     adminPanel.classList.toggle('hidden');
-    renderAdminList();
+
+    if (!adminPanel.classList.contains('hidden')) {
+        renderAdminList();
+    }
+
 }
 
 async function renderAdminList() {
