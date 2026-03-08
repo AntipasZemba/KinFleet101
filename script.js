@@ -219,8 +219,15 @@ monthFilter.onchange = renderAll;
 
 function renderAll() {
     const month = monthFilter.value;
-    const eFilt = month ? entries.filter(e => e.date.startsWith(month)) : entries;
-    const mFilt = month ? maintenance.filter(e => e.date.startsWith(month)) : maintenance;
+
+    // Filter first
+    let eFilt = month ? entries.filter(e => e.date.startsWith(month)) : [...entries];
+    let mFilt = month ? maintenance.filter(e => e.date.startsWith(month)) : [...maintenance];
+
+    // Sort by date ascending (oldest first)
+    eFilt.sort((a, b) => new Date(a.date) - new Date(b.date));
+    mFilt.sort((a, b) => new Date(a.date) - new Date(b.date));
+
     renderTables(eFilt, mFilt);
     updateSummary(eFilt, mFilt);
     updateLeaderboard(eFilt);
